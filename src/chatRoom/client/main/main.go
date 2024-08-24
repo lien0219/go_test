@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gomodule/redigo/redis/src/chatRoom/client/process"
 	"os"
 )
 
@@ -10,11 +11,11 @@ var (
 	userId  int
 	userPwd string
 	key     int
-	loop    = true
+	//loop    = true
 )
 
 func main() {
-	for loop {
+	for true {
 		fmt.Println("\t------欢迎登录聊天系统------")
 		fmt.Println("\t\t\t 1 登录聊天室")
 		fmt.Println("\t\t\t 2 注册用户")
@@ -25,10 +26,17 @@ func main() {
 		switch key {
 		case 1:
 			fmt.Println("登录聊天室")
-			loop = false
+			fmt.Println("请输入用户id")
+			fmt.Scanf("%d\n", &userId)
+			fmt.Println("请输入用户密码")
+			fmt.Scanf("%s\n", &userPwd)
+			//loop = false
+			//	完成登录
+			up := &process.UserProcess{}
+			up.Login(userId, userPwd)
 		case 2:
 			fmt.Println("注册用户")
-			loop = false
+			//loop = false
 		case 3:
 			fmt.Println("退出系统")
 			//loop = false
@@ -38,18 +46,15 @@ func main() {
 		}
 	}
 
-	if key == 1 {
-		fmt.Println("请输入用户id")
-		fmt.Scanf("%d\n", &userId)
-		fmt.Println("请输入用户密码")
-		fmt.Scanf("%s\n", &userPwd)
-		err := Login(userId, userPwd)
-		if err != nil {
-			fmt.Println("登录失败")
-		} else {
-			fmt.Println("登录成功")
-		}
-	} else if key == 2 {
-		fmt.Println("用户进行注册")
-	}
+	//if key == 1 {
+	//
+	//	//err := Login(userId, userPwd)
+	//	//if err != nil {
+	//	//	fmt.Println("登录失败")
+	//	//} else {
+	//	//	fmt.Println("登录成功")
+	//	//}
+	//} else if key == 2 {
+	//	fmt.Println("用户进行注册")
+	//}
 }

@@ -1,4 +1,4 @@
-package main
+package process
 
 import (
 	"encoding/binary"
@@ -9,7 +9,10 @@ import (
 	"net"
 )
 
-func Login(userId int, userPwd string) (err error) {
+type UserProcess struct {
+}
+
+func (this *UserProcess) Login(userId int, userPwd string) (err error) {
 	//fmt.Printf("userId = %d userPwd = %s\n", userId, userPwd)
 	//return nil
 
@@ -67,7 +70,10 @@ func Login(userId int, userPwd string) (err error) {
 
 	//time.Sleep(20 * time.Second)
 	//fmt.Println("休眠了20...")
-	mes, err = utils.readPkg(conn)
+	tf := &utils.Transfer{
+		Conn: conn,
+	}
+	mes, err = tf.ReadPkg()
 	if err != nil {
 		fmt.Println("readPkg(conn) err:", err)
 		return
@@ -75,7 +81,15 @@ func Login(userId int, userPwd string) (err error) {
 	var loginResMes message.LoginResMes
 	err = json.Unmarshal([]byte(mes.Data), &loginResMes)
 	if loginResMes.Code == 200 {
-		fmt.Println("登录成功")
+
+		//fmt.Println("登录成功")
+
+		//客户端协程（保持与服务端的通讯）
+		go ServerProcessMes(conn)
+		//	登录后的菜单
+		for {
+			ShowMenu()
+		}
 	} else if loginResMes.Code == 500 {
 		fmt.Println(loginResMes.Error)
 	}
