@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gomodule/redigo/redis/src/chatRoom/common/message"
+	"github.com/gomodule/redigo/redis/src/chatRoom/server/model"
 	"github.com/gomodule/redigo/redis/src/chatRoom/server/utils"
 	"net"
 )
@@ -26,13 +27,32 @@ func (this *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 
 	var loginResMes message.LoginResMes
 
-	//如果用户id=100，密码=123456则合法，否则不合法
-	if loginMes.UserId == 100 && loginMes.UserPwd == "123456" {
-		loginResMes.Code = 200
+	//redis校验
+	user, err := model.MyUserDao.Login(loginMes.UserId, loginMes.UserPwd)
+	if err != nil {
+		//用户不存在
+		if err == model.ERROR_USER_NOTEXISTS {
+			loginResMes.Code = 500
+			loginResMes.Error = err.Error()
+		} else if err == model.ERROR_USER_PWD {
+			loginResMes.Code = 403
+			loginResMes.Error = err.Error()
+		} else {
+			loginResMes.Code = 505
+			loginResMes.Error = "服务器内部错误..."
+		}
 	} else {
-		loginResMes.Code = 500
-		loginResMes.Error = "该用户不存在，请注册再使用"
+		loginResMes.Code = 200
+		fmt.Println(user, "登录成功")
 	}
+
+	//如果用户id=100，密码=123456则合法，否则不合法
+	//if loginMes.UserId == 100 && loginMes.UserPwd == "123456" {
+	//	loginResMes.Code = 200
+	//} else {
+	//	loginResMes.Code = 500
+	//	loginResMes.Error = "该用户不存在，请注册再使用"
+	//}
 
 	//loginResMess序列化
 	data, err := json.Marshal(loginResMes)

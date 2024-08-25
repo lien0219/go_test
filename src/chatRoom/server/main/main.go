@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/gomodule/redigo/redis/src/chatRoom/server/model"
 	"net"
+	"time"
 )
 
 //func readPkg(conn net.Conn) (mes message.Message, err error) {
@@ -122,7 +124,16 @@ func process(conn net.Conn) {
 		return
 	}
 }
+
+// UserDao初始化
+func initUserDao() {
+	model.MyUserDao = model.NewUserDao(pool)
+}
 func main() {
+	//初始化redis连接池
+	initPool("localhost:6379", 16, 0, 300*time.Second)
+	initUserDao()
+
 	fmt.Println("服务器在8889端口监听......")
 	listen, err := net.Listen("tcp", "0.0.0.0:8889")
 
