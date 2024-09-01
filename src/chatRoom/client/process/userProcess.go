@@ -7,6 +7,7 @@ import (
 	"github.com/gomodule/redigo/redis/src/chatRoom/client/utils"
 	"github.com/gomodule/redigo/redis/src/chatRoom/common/message"
 	"net"
+	"os"
 )
 
 type UserProcess struct {
@@ -92,6 +93,64 @@ func (this *UserProcess) Login(userId int, userPwd string) (err error) {
 		}
 	} else {
 		fmt.Println(loginResMes.Error)
+	}
+	return
+}
+
+func (this *UserProcess) Register(userId int, userPwd string, userName string) {
+	//	连接服务器
+	conn, err := net.Dial("tcp", "localhost:8889")
+	if err != nil {
+		fmt.Println("net.Dial err:", err)
+		return
+	}
+
+	defer conn.Close()
+
+	//	通过conn发送消息给服务
+	var mes message.Message
+	mes.Type = message.RegisterMesType
+	var registerMes message.RegisterMes
+	registerMes.User.UserId = userId
+	registerMes.User.UserPwd = userPwd
+	registerMes.User.UserName = userName
+
+	// loginMes序列化
+	data, err := json.Marshal(registerMes)
+	if err != nil {
+		fmt.Println("json.Marshal err:", err)
+		return
+	}
+	mes.Data = string(data)
+
+	data, err = json.Marshal(mes)
+	if err != nil {
+		fmt.Println("json.Marshal err:", err)
+		return
+	}
+
+	tf := &utils.Transfer{
+		Conn: conn,
+	}
+	err = tf.WritePkg(data)
+	if err != nil {
+		fmt.Println("注册发送信息错误：err=", err)
+		return
+	}
+	mes, err = tf.ReadPkg()
+	if err != nil {
+		fmt.Println("ReadPkg() err:", err)
+		return
+	}
+
+	var registerResMes message.RegisterResMes
+	err = json.Unmarshal([]byte(mes.Data), &registerResMes)
+	if registerResMes.Code == 200 {
+		fmt.Println("注册成功")
+		os.Exit(0)
+	} else {
+		fmt.Println(registerResMes.Error)
+		os.Exit(0)
 	}
 	return
 }

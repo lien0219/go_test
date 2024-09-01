@@ -12,6 +12,7 @@ var (
 	userPwd string
 	key     int
 	//loop    = true
+	userName string
 )
 
 func main() {
@@ -37,6 +38,15 @@ func main() {
 		case 2:
 			fmt.Println("注册用户")
 			//loop = false
+			fmt.Println("请输用户的id:")
+			fmt.Scanf("%d\n", &userId)
+			fmt.Println("请输入用户密码：")
+			fmt.Scanf("%s\n", &userPwd)
+			fmt.Println("请输入用户的名字（nickname）")
+			fmt.Scanf("%s\n", &userName)
+
+			up := &process.UserProcess{}
+			up.Register(userId, userPwd, userName)
 		case 3:
 			fmt.Println("退出系统")
 			//loop = false

@@ -1,9 +1,10 @@
 package message
 
 const (
-	LoginMesType    = "LoginMes"
-	LoginResMesType = "LoginResMes"
-	RegisterMesType = "RegisterMes"
+	LoginMesType       = "LoginMes"
+	LoginResMesType    = "LoginResMes"
+	RegisterMesType    = "RegisterMes"
+	RegisterResMesType = "RegisterResMes"
 )
 
 type Message struct {
@@ -20,4 +21,9 @@ type LoginResMes struct {
 	Error string `json:"error"` //错误信息
 }
 type RegisterMes struct {
+	User User `json:"user"`
+}
+type RegisterResMes struct {
+	Code  int    `json:"code"`
+	Error string `json:"error"`
 }

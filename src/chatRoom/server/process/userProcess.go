@@ -13,6 +13,33 @@ type UserProcess struct {
 	Conn net.Conn
 }
 
+func (this *UserProcess) ServerProcessRegister(mes *message.Message) (err error) {
+	var registerMes message.RegisterMes
+	err = json.Unmarshal([]byte(mes.Data), &registerMes)
+	if err != nil {
+		fmt.Println("json.Unmarshal fail err:", err)
+		return
+	}
+
+	var resMes message.Message
+	resMes.Type = message.RegisterResMesType
+	var registerResMes message.RegisterResMes
+
+	err = model.MyUserDao.Register(&registerMes.User)
+	if err != nil {
+		if err == model.ERROR_USER_EXISTS {
+			registerResMes.Code = 505
+			registerResMes.Error = model.ERROR_USER_EXISTS.Error()
+		} else {
+			registerResMes.Code = 506
+			registerResMes.Error = "注册错误"
+		}
+	} else {
+		registerResMes.Code = 200
+	}
+	return
+}
+
 // 处理登录
 func (this *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	var loginMes message.LoginMes
