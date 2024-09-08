@@ -85,6 +85,21 @@ func (this *UserProcess) Login(userId int, userPwd string) (err error) {
 
 		//fmt.Println("登录成功")
 
+		fmt.Println("当前在线用户列表：")
+		for _, v := range loginResMes.UserIds {
+			if v == userId {
+				continue
+			}
+			fmt.Printf("用户id:\t", v)
+			//客户端的onlineUsers初始化
+			user := &message.User{
+				UserId:     v,
+				UserStatus: message.UserOnline,
+			}
+			onlineUsers[v] = user
+		}
+		fmt.Print("\n\n")
+
 		//客户端协程（保持与服务端的通讯）
 		go ServerProcessMes(conn)
 		//	登录后的菜单
