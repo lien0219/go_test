@@ -15,6 +15,10 @@ type Processor struct {
 
 // 处理客户端多种消息类型
 func (this *Processor) serverProcessMes(mes *message.Message) (err error) {
+
+	//接收客户端群发消息
+	fmt.Println("mes:", mes)
+
 	switch mes.Type {
 	case message.LoginMesType:
 		//处理登录

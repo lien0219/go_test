@@ -2,11 +2,13 @@ package process
 
 import (
 	"fmt"
+	"github.com/gomodule/redigo/redis/src/chatRoom/client/model"
 	"github.com/gomodule/redigo/redis/src/chatRoom/common/message"
 )
 
 // 客户端维护的map
 var onlineUsers map[int]*message.User = make(map[int]*message.User, 10)
+var CurUser model.CurUser
 
 // 客户端显示当前在线用户
 func outputOnlineUser() {

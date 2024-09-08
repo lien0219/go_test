@@ -6,6 +6,7 @@ const (
 	RegisterMesType         = "RegisterMes"
 	RegisterResMesType      = "RegisterResMes"
 	NotifyUserStatusMesType = "NotifyUserStatusMes"
+	SmsMesType              = "SmsMes"
 )
 
 // 用户状态
@@ -42,3 +43,11 @@ type NotifyUserStatusMes struct {
 	UserId int `json:"userId"`
 	Status int `json:"status"`
 }
+
+// 增加一个SmsMes  //发送的消息
+type SmsMes struct {
+	Content string `json:"content"` //内容
+	User           //匿名结构体，继承
+}
+
+//SmsReMes
