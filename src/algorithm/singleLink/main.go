@@ -31,7 +31,7 @@ func InsertHeroNode2(head *HeroNode, newHeroNode *HeroNode) {
 	for {
 		if temp.next == nil { //链表最后
 			break
-		} else if temp.next.no < newHeroNode.no {
+		} else if temp.next.no <= newHeroNode.no {
 			//newHeroNode插在temp后
 			break
 		} else if temp.next.no == newHeroNode.no {
@@ -46,6 +46,28 @@ func InsertHeroNode2(head *HeroNode, newHeroNode *HeroNode) {
 	} else {
 		newHeroNode.next = temp.next
 		temp.next = newHeroNode
+	}
+}
+
+// 删除节点
+func DelHeroNode(head *HeroNode, id int) {
+	temp := head
+	flag := false
+	for {
+		if temp.next == nil { //链表最后
+			break
+		} else if temp.next.no == id {
+			//找到节点
+			flag = true
+			break
+		}
+		temp = temp.next
+	}
+	if flag {
+		//删除
+		temp.next = temp.next.next
+	} else {
+		fmt.Println("要删除的id不存在")
 	}
 }
 
@@ -94,6 +116,12 @@ func main() {
 	InsertHeroNode2(head, head1)
 	InsertHeroNode2(head, head2)
 	InsertHeroNode2(head, head3)
+	//显示
+	ListHeroNode(head)
+
+	fmt.Println()
+	//删除
+	DelHeroNode(head, 2)
 	//显示
 	ListHeroNode(head)
 }
