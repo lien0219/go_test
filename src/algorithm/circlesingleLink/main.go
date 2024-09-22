@@ -45,6 +45,57 @@ func ListCircleLink(head *CatNode) {
 		temp = temp.next
 	}
 }
+
+// 删除
+func DelCatNode(head *CatNode, id int) *CatNode {
+	temp := head
+	helper := head
+	//空链表
+	if temp.next == nil {
+		fmt.Println("空环形链表，不能删除")
+		return head
+	}
+	//如果只有一个节点
+	if temp.next == head {
+		temp.next = nil
+		return head
+	}
+	//将helper定位到链表最后
+	for {
+		if helper.next == head {
+			break
+		}
+		helper = helper.next
+	}
+	//包含两个以上的节点
+	flag := true
+	for {
+		if temp.next == head { //最后一个
+			break
+		}
+		if temp.no == id { //找到
+			if temp == head {
+				head = head.next
+			}
+			helper.next = temp.next
+			fmt.Printf("猫的id:%d\n", id)
+			flag = false
+			break
+		}
+		temp = temp.next
+		helper = helper.next
+	}
+	if flag {
+		if temp.no == id {
+			helper.next = temp.next
+			fmt.Printf("猫的id:%d\n", id)
+		} else {
+			fmt.Printf("没有对应的id:%d \n", id)
+		}
+	}
+
+	return head
+}
 func main() {
 	//环形链表的头节点
 	head := &CatNode{}
@@ -53,7 +104,21 @@ func main() {
 		no:   1,
 		name: "梨花",
 	}
-
+	cat2 := &CatNode{
+		no:   2,
+		name: "橘猫",
+	}
+	//cat3 := &CatNode{
+	//	no:   3,
+	//	name: "布偶",
+	//}
 	InsertCatNode(head, cat1)
+	InsertCatNode(head, cat2)
+	//InsertCatNode(head, cat3)
+	ListCircleLink(head)
+	head = DelCatNode(head, 1)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
 	ListCircleLink(head)
 }
