@@ -46,11 +46,15 @@ func InsertHeroNode2(head *HeroNode, newHeroNode *HeroNode) {
 		return
 	} else {
 		newHeroNode.next = temp.next
+		newHeroNode.pre = temp
+		if temp.next != nil {
+			temp.next.pre = newHeroNode
+		}
 		temp.next = newHeroNode
 	}
 }
 
-// 删除节点
+// 双向链表删除一个节点
 func DelHeroNode(head *HeroNode, id int) {
 	temp := head
 	flag := false
@@ -67,6 +71,9 @@ func DelHeroNode(head *HeroNode, id int) {
 	if flag {
 		//删除
 		temp.next = temp.next.next
+		if temp.next != nil {
+			temp.next.pre = temp
+		}
 	} else {
 		fmt.Println("要删除的id不存在")
 	}
