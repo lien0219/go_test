@@ -23,6 +23,17 @@ func (this *Stack) Push(val int) (err error) {
 	return
 }
 
+// 出栈
+func (this *Stack) Pop() (val int, err error) {
+	if this.Top == -1 {
+		fmt.Println("stack empty")
+		return 0, errors.New("stack empty")
+	}
+	val = this.arr[this.Top]
+	this.Top--
+	return val, nil
+}
+
 // 遍历栈
 func (this *Stack) List() {
 	if this.Top == -1 {
@@ -49,5 +60,10 @@ func main() {
 	stack.Push(5)
 
 	//显示
+	stack.List()
+
+	val, _ := stack.Pop()
+	fmt.Println("出栈:", val)
+
 	stack.List()
 }
