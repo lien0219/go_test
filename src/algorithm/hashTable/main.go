@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 /*
 有一个公司，当有新员工报道时，要求该员工的信息加入id,性别，年龄，住址，输入该
@@ -11,6 +14,11 @@ type Emp struct {
 	Name string
 	Next *Emp
 }
+
+func (this *Emp) ShowMe() {
+	fmt.Printf("链表%d找到该雇员%d\n", this.Id%7, this.Id)
+}
+
 type EmpLink struct {
 	Head *Emp
 }
@@ -77,6 +85,24 @@ func (this *HashTable) ShowAll() {
 		this.LinkArr[i].ShowLink(i)
 	}
 }
+
+// 查找
+func (this *EmpLink) FindById(id int) *Emp {
+	cur := this.Head
+	for {
+		if cur != nil && cur.Id == id {
+			return cur
+		} else if cur == nil {
+			break
+		}
+		cur = cur.Next
+	}
+	return nil
+}
+func (this *HashTable) FindById(id int) *Emp {
+	linkNo := this.HashFun(id)
+	return this.LinkArr[linkNo].FindById(id)
+}
 func main() {
 	key := ""
 	id := 0
@@ -103,7 +129,18 @@ func main() {
 			hashTable.Insert(emp)
 		case "show":
 			hashTable.ShowAll()
+		case "find":
+			fmt.Println("请输入id号：")
+			fmt.Scanln(&id)
+			emp := hashTable.FindById(id)
+			if emp == nil {
+				fmt.Printf("id-%d 的雇员不存在\n", id)
+			} else {
+				//显示雇员信息
+				emp.ShowMe()
+			}
 		case "exit":
+			os.Exit(0)
 		default:
 			fmt.Println("输入错误")
 
